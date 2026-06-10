@@ -124,7 +124,20 @@
 gh auth status
 gh api repos/<owner>/<repo>/branches/<branch>/protection
 gh api repos/<owner>/<repo>/rulesets
+# Vulnerability alerts / Dependabot alerts: 204 表示已启用，404 可能表示未启用或权限不足。
+gh api repos/<owner>/<repo>/vulnerability-alerts --include
+# Dependabot security updates / automated security fixes: 204 表示已启用。
+gh api repos/<owner>/<repo>/automated-security-fixes --include
 ```
+
+如需启用依赖漏洞告警和自动安全修复 PR，可由拥有 Admin 权限的账号执行：
+
+```bash
+gh api --method PUT repos/<owner>/<repo>/vulnerability-alerts
+gh api --method PUT repos/<owner>/<repo>/automated-security-fixes
+```
+
+说明：Vulnerability alerts / Dependabot alerts 负责发现依赖漏洞并提醒；Dependabot security updates / automated security fixes 负责在有可修复漏洞时自动创建安全升级 PR，不会自动绕过 CI、Review 或分支保护。
 
 如果 API 返回 404、空列表或权限不足，不要直接判断未配置，应标记为“需要管理员或更高权限确认”。
 

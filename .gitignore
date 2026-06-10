@@ -1,0 +1,59 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code local planning artifacts
+.claude/plans/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+id_rsa
+credentials.json
+service-account.json
+
+# Logs and temporary files
+*.log
+logs/
+tmp/
+temp/
+.cache/
+
+# Dependencies and package manager caches
+node_modules/
+.pnpm-store/
+.yarn/cache/
+vendor/
+
+# Build and coverage outputs
+dist/
+build/
+target/
+coverage/
+*.tsbuildinfo
+
+# Python caches, used by local validation helpers
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Game / engine generated folders
+Library/
+Temp/
+DerivedDataCache/
+.gradle/

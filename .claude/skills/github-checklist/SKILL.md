@@ -228,4 +228,6 @@ description: Show or apply stage-specific GitHub collaboration checklists for pr
 - 不要输出全部 Checklist，除非用户明确要求。
 - 如果用户场景不明确，先给场景菜单或说明你推断的场景。
 - 如果用户要求输出某一场景，优先使用 `CHECKLISTS.md` 中对应内容。
+- 在 `pre-commit` 场景中，应明确提示使用 Conventional Commit 格式：`<type>: <short summary>`；常用 type 包括 `feat`、`fix`、`docs`、`ci`、`chore`、`refactor`、`test`。
+- 在 `pre-commit` 场景中，建议 commit message 使用 `Refs #<issue-id>` 关联 Issue；由 PR 描述使用 `Closes #<issue-id>` 在合并时关闭 Issue。
 - 如果用户要求结合当前仓库检查，只做轻量检查；完整检查建议使用 `/github-project-check`。

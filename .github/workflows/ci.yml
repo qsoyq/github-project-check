@@ -1,0 +1,159 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  governance-check:
+    name: Repository governance check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check repository governance files
+        shell: python
+        run: |
+          from pathlib import Path
+          import fnmatch
+          import sys
+
+          root = Path.cwd()
+          errors = []
+
+          required_files = [
+              "README.md",
+              ".gitignore",
+              ".gitattributes",
+              "CODEOWNERS",
+              "CONTRIBUTING.md",
+              "SECURITY.md",
+              ".github/PULL_REQUEST_TEMPLATE.md",
+              ".github/settings.yml",
+              ".github/dependabot.yml",
+              ".claude/skills/github-project-check/SKILL.md",
+              ".claude/skills/github-project-check/CHECKLIST.md",
+              ".claude/skills/github-project-check/RULES.md",
+              ".claude/skills/github-project-check/REPORT_TEMPLATE.md",
+              ".claude/skills/github-project-check/README.md",
+              ".claude/skills/github-checklist/SKILL.md",
+              ".claude/skills/github-checklist/CHECKLISTS.md",
+              ".claude/skills/github-checklist/README.md",
+          ]
+
+          required_dirs = [
+              ".github/ISSUE_TEMPLATE",
+              ".github/workflows",
+              "docs",
+              "docs/decisions",
+              "docs/release",
+              "docs/postmortems",
+          ]
+
+          for rel in required_files:
+              if not (root / rel).is_file():
+                  errors.append(f"missing required file: {rel}")
+
+          for rel in required_dirs:
+              if not (root / rel).is_dir():
+                  errors.append(f"missing required directory: {rel}")
+
+          readme = (root / "README.md").read_text(encoding="utf-8")
+          readme_required_terms = [
+              "项目简介",
+              "技术栈",
+              "使用方式",
+              "测试方式",
+              "构建方式",
+              "分支策略",
+              "发布流程",
+              "负责人",
+          ]
+          for term in readme_required_terms:
+              if term not in readme:
+                  errors.append(f"README.md missing section or term: {term}")
+
+          pr_template = (root / ".github/PULL_REQUEST_TEMPLATE.md").read_text(encoding="utf-8")
+          pr_required_terms = [
+              "变更摘要",
+              "关联 Issue",
+              "影响范围",
+              "验证方式",
+              "风险与回滚方案",
+              "是否使用 AI 辅助",
+              "Reviewer 关注点",
+          ]
+          for term in pr_required_terms:
+              if term not in pr_template:
+                  errors.append(f"PR template missing term: {term}")
+
+          settings = (root / ".github/settings.yml").read_text(encoding="utf-8")
+          settings_required_terms = [
+              "required_pull_request_reviews",
+              "required_approving_review_count",
+              "require_code_owner_reviews",
+              "required_status_checks",
+              "Repository governance check",
+          ]
+          for term in settings_required_terms:
+              if term not in settings:
+                  errors.append(f".github/settings.yml missing expected branch protection term: {term}")
+
+          issue_templates = list((root / ".github/ISSUE_TEMPLATE").glob("*.md"))
+          if len(issue_templates) < 3:
+              errors.append("expected at least three issue templates")
+
+          risk_names = {
+              ".env",
+              ".env.local",
+              ".env.production",
+              "id_rsa",
+              "credentials.json",
+              "service-account.json",
+          }
+          risk_globs = ["*.pem", "*.key", "*.p12", "*.jks"]
+          artifact_dirs = {
+              "dist",
+              "build",
+              "target",
+              "node_modules",
+              ".gradle",
+              "Library",
+              "Temp",
+              "DerivedDataCache",
+          }
+
+          for path in root.rglob("*"):
+              rel = path.relative_to(root)
+              parts = set(rel.parts)
+              if ".git" in parts:
+                  continue
+              if path.is_dir():
+                  if path.name in artifact_dirs:
+                      errors.append(f"build artifact directory should not be committed: {rel}")
+                  continue
+              if path.name in risk_names or any(fnmatch.fnmatch(path.name, pattern) for pattern in risk_globs):
+                  errors.append(f"sensitive-risk filename should not be committed: {rel}")
+              if path.stat().st_size > 1024 * 1024:
+                  errors.append(f"large file over 1 MiB should be reviewed before commit: {rel}")
+
+          if errors:
+              print("Repository governance check failed:")
+              for error in errors:
+                  print(f"- {error}")
+              sys.exit(1)
+
+          print("Repository governance check passed.")

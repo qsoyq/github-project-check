@@ -130,7 +130,9 @@ README 建议包含：
 - [ ] production environment 是否配置 required reviewers。
 - [ ] Secret scanning 是否开启。
 - [ ] Push protection 是否开启。
-- [ ] Dependabot alerts 是否开启。
+- [ ] Dependabot alerts / Vulnerability alerts 是否开启。
+- [ ] Dependabot security updates / automated security fixes 是否开启。
+- [ ] 如需定期检查依赖或 GitHub Actions 版本，`.github/dependabot.yml` 是否存在。
 - [ ] Code scanning 是否开启。
 - [ ] 仓库权限、团队权限是否符合最小权限原则。
 - [ ] GitHub App / Claude Code App 的实际权限范围。

@@ -377,6 +377,42 @@ gh api repos/<owner>/<repo>/branches/<branch>/protection
 gh api repos/<owner>/<repo>/rulesets
 ```
 
+如需要通过 GitHub API 启用单个仓库的核心分支保护，可使用以下模板。执行前必须确认当前账号拥有仓库 Admin 权限，并替换 `<owner>`、`<repo>`、`<branch>` 和 required check 名称：
+
+```bash
+gh api \
+  --method PUT \
+  -H "Accept: application/vnd.github+json" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  "/repos/<owner>/<repo>/branches/<branch>/protection" \
+  --input - <<'JSON'
+{
+  "required_status_checks": {
+    "strict": true,
+    "contexts": [
+      "Repository governance check"
+    ]
+  },
+  "enforce_admins": false,
+  "required_pull_request_reviews": {
+    "required_approving_review_count": 1,
+    "require_code_owner_reviews": true,
+    "dismiss_stale_reviews": true,
+    "require_last_push_approval": true
+  },
+  "restrictions": null,
+  "required_conversation_resolution": true,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "required_linear_history": false,
+  "lock_branch": false,
+  "allow_fork_syncing": false
+}
+JSON
+```
+
+其中 `enforce_admins: false` 表示管理员可绕过分支保护合并，适用于个人仓库或没有第二个 reviewer 的 bootstrap 阶段；PR 作者仍不能 approve 自己的 PR。团队仓库或已有多个维护者时，应改为 `enforce_admins: true`，让管理员也受保护规则约束。API 返回成功后，仍应通过 GitHub UI 或 `gh api repos/<owner>/<repo>/branches/<branch>/protection` 复核实际状态。
+
 因此，检查报告应区分：
 
 ```text
@@ -488,7 +524,9 @@ CLAUDE.md template
 再接入：
 
 - CodeQL。
-- Dependabot。
+- Dependabot alerts / Vulnerability alerts。
+- Dependabot security updates / automated security fixes。
+- `.github/dependabot.yml` 定期检查依赖或 GitHub Actions 版本。
 - Claude Code Action。
 - 自动日报。
 
