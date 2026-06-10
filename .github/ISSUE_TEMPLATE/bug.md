@@ -1,6 +1,6 @@
 ---
 name: Bug
-description: 报告缺陷、错误行为或文档 / skill 问题
+about: 报告缺陷、错误行为或文档 / skill 问题
 title: "[Bug] "
 labels: ["type/bug"]
 assignees: []
