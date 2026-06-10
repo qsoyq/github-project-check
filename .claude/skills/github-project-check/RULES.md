@@ -60,6 +60,7 @@
 - 生产部署没有审批或 environment gate。
 - PR from fork 可访问生产 secrets。
 - 核心分支缺少任何可见保护说明，且平台侧也未确认。
+- 仓库存在 `.github/settings.yml` 等期望配置，但长期未同步或平台侧实际配置与期望不一致。
 - 正式项目没有 PR / MR 流程。
 - 正式项目没有任何质量检查。
 
@@ -102,12 +103,30 @@
 例如：
 
 - Branch Protection。
+- Repository Rulesets。
+- Required status checks。
+- Required reviewers。
+- CODEOWNERS 是否被强制要求。
 - Secret scanning。
 - Push protection。
 - Dependabot alerts。
 - Code scanning。
 - Environment required reviewers。
 - 团队权限。
+
+### 配置即代码的边界
+
+如果仓库存在 `.github/settings.yml`、Terraform / OpenTofu 或其他 GitHub 配置即代码文件，只能说明仓库声明了期望状态。检查报告可以把它作为“本地有保护期望配置”的通过项或线索，但仍不能据此判断 GitHub 平台已实际启用对应规则。
+
+需要确认实际状态时，优先使用 GitHub UI 或以下 `gh` CLI / GitHub API：
+
+```bash
+gh auth status
+gh api repos/<owner>/<repo>/branches/<branch>/protection
+gh api repos/<owner>/<repo>/rulesets
+```
+
+如果 API 返回 404、空列表或权限不足，不要直接判断未配置，应标记为“需要管理员或更高权限确认”。
 
 ### 不要打印敏感内容
 

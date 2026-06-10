@@ -1,0 +1,9 @@
+# Default owners for repository changes.
+# Replace @qsoyq with the responsible team if this repository is moved under an organization.
+
+* @qsoyq
+
+# GitHub collaboration templates and Claude Code skills require owner review.
+.github/ @qsoyq
+.claude/skills/ @qsoyq
+docs/ @qsoyq

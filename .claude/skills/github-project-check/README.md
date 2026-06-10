@@ -40,4 +40,14 @@
 
 ## 注意
 
-该 skill 默认只做本地仓库静态检查。Branch Protection、Secret scanning、Environment Approval、团队权限等平台配置需要 GitHub API、GitLab API 或管理员确认。
+该 skill 默认只做本地仓库静态检查。Branch Protection、Repository Rulesets、Secret scanning、Environment Approval、团队权限等平台配置需要 GitHub API、GitLab API 或管理员确认。
+
+如果仓库存在 `.github/settings.yml`、Terraform / OpenTofu 等配置即代码文件，skill 可以检查其中是否声明了核心分支保护、PR review、Code Owner review、status checks 等期望配置。但这些文件只能表示期望状态，不能证明配置已成功应用到 GitHub 平台。
+
+可选平台检查命令：
+
+```bash
+gh auth status
+gh api repos/<owner>/<repo>/branches/<branch>/protection
+gh api repos/<owner>/<repo>/rulesets
+```

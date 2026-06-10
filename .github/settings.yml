@@ -1,0 +1,12 @@
+# Desired GitHub repository settings for the Settings app / Probot settings.
+# This file is an expected-state declaration. It does not prove the settings
+# have been applied; verify the live platform state with GitHub UI or gh api.
+
+branches:
+  - name: main
+    protection:
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+        require_code_owner_reviews: true
+      enforce_admins: false
+      restrictions: null

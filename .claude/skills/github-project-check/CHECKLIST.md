@@ -112,11 +112,17 @@ README 建议包含：
 - [ ] `CLAUDE.md` 包含安全要求。
 - [ ] PR 模板包含 AI 使用声明。
 
-## 9. 需要平台侧确认
+## 9. 平台治理配置与确认
 
-以下项目本地无法可靠判断：
+本地可检查期望配置：
 
-- [ ] Branch Protection 是否开启。
+- [ ] `.github/settings.yml` 存在，如团队使用 Settings app / Probot settings / 等价配置即代码方案。
+- [ ] `.github/settings.yml` 声明核心分支保护期望，如 PR review 数量、Code Owner review、状态检查要求等。
+- [ ] `CODEOWNERS` 存在，或 `.github/CODEOWNERS` 存在。
+
+以下项目本地无法可靠判断，必须通过 GitHub API、GitLab API 或管理员确认实际平台状态：
+
+- [ ] Branch Protection 或 Repository Rulesets 是否开启并覆盖核心分支。
 - [ ] Required status checks 是否配置。
 - [ ] Required reviewers 是否配置。
 - [ ] CODEOWNERS 是否被分支保护规则强制要求。
@@ -128,3 +134,13 @@ README 建议包含：
 - [ ] Code scanning 是否开启。
 - [ ] 仓库权限、团队权限是否符合最小权限原则。
 - [ ] GitHub App / Claude Code App 的实际权限范围。
+
+可选 API 检查命令：
+
+```bash
+gh auth status
+gh api repos/<owner>/<repo>/branches/<branch>/protection
+gh api repos/<owner>/<repo>/rulesets
+```
+
+说明：`.github/settings.yml` 只能表示期望状态，不能证明配置已成功应用到 GitHub 平台。

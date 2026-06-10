@@ -66,6 +66,7 @@ description: Check whether the current repository follows the team's GitHub coll
 - workflow 是否存在明显的 secrets 输出风险。
 - workflow 是否存在过宽权限且没有说明用途。
 - workflow 是否使用未固定版本的第三方 action。
+- `.github/settings.yml` 是否存在，是否声明核心分支保护的期望配置。
 - `docs/` 目录是否存在。
 - `docs/decisions/`、`docs/release/`、`docs/postmortems/` 等目录是否存在。
 - `CLAUDE.md` 是否存在。
@@ -77,7 +78,7 @@ description: Check whether the current repository follows the team's GitHub coll
 
 这些项目本地仓库无法可靠判断，必须标记为“需要人工确认”或“需要 GitHub/GitLab API 检查”：
 
-- Branch Protection 是否开启。
+- Branch Protection 或 Repository Rulesets 是否开启并覆盖核心分支。
 - Required status checks 是否配置。
 - Required reviewers 是否配置。
 - CODEOWNERS 是否被分支保护规则强制要求。
@@ -90,7 +91,7 @@ description: Check whether the current repository follows the team's GitHub coll
 - 仓库权限、团队权限是否符合最小权限原则。
 - GitHub App / Claude Code App 的实际权限范围。
 
-不要把“本地没看到”直接判断为“平台未配置”。对于本地不可见项，应明确输出为“需要平台侧确认”。
+不要把“本地没看到”直接判断为“平台未配置”。对于本地不可见项，应明确输出为“需要平台侧确认”。如果仓库存在 `.github/settings.yml`，只能把它视为期望状态或配置即代码线索，不能直接当作 GitHub 平台实际状态。需要可靠确认时，建议使用 `gh api repos/<owner>/<repo>/branches/<branch>/protection` 和 `gh api repos/<owner>/<repo>/rulesets`，或让管理员在 GitHub UI 中确认。
 
 ## 最小检查项
 
@@ -100,9 +101,10 @@ description: Check whether the current repository follows the team's GitHub coll
 2. 协作入口：PR 模板、Issue 模板、CODEOWNERS。
 3. 安全文件：`SECURITY.md`、Secrets 风险文件。
 4. CI/CD：`.github/workflows/`、`permissions`、`timeout-minutes`、`environment`。
-5. 文档沉淀：`docs/`、`docs/decisions/`、`docs/release/`、`docs/postmortems/`。
-6. AI 准备：`CLAUDE.md`、`.github/copilot-instructions.md`、PR 模板中的 AI 使用声明。
-7. 构建产物和大文件：`dist/`、`build/`、`node_modules/`、`Library/`、`Temp/`、大型二进制文件。
+5. 平台治理期望配置：`.github/settings.yml`，以及其中对核心分支保护、PR review、Code Owner review、status checks 的声明。
+6. 文档沉淀：`docs/`、`docs/decisions/`、`docs/release/`、`docs/postmortems/`。
+7. AI 准备：`CLAUDE.md`、`.github/copilot-instructions.md`、PR 模板中的 AI 使用声明。
+8. 构建产物和大文件：`dist/`、`build/`、`node_modules/`、`Library/`、`Temp/`、大型二进制文件。
 
 ## 执行步骤
 
@@ -113,10 +115,11 @@ description: Check whether the current repository follows the team's GitHub coll
 5. 检查 Issue / PR / CODEOWNERS 协作入口。
 6. 检查文档目录和决策沉淀。
 7. 检查 GitHub Actions / CI 风险。
-8. 检查敏感文件和密钥风险。
-9. 检查大文件、构建产物和游戏资产风险。
-10. 检查 AI 工具接入准备情况。
-11. 输出结构化报告。
+8. 检查 `.github/settings.yml` 等平台治理期望配置；实际状态仍需平台侧确认。
+9. 检查敏感文件和密钥风险。
+10. 检查大文件、构建产物和游戏资产风险。
+11. 检查 AI 工具接入准备情况。
+12. 输出结构化报告。
 
 ## 结果等级
 

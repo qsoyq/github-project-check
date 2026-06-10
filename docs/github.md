@@ -353,18 +353,29 @@
 - 模板是否完整。
 - workflow 是否声明 `permissions`。
 - workflow 是否设置 `timeout-minutes`。
+- `.github/settings.yml` 是否存在，以及是否声明核心分支保护、PR review、Code Owner review、status checks 等期望配置。
 - 是否存在 `.env`、`.pem`、`.key` 等敏感文件风险。
 - 是否存在 `CLAUDE.md` 和 Copilot instructions。
 
 本地无法可靠判断，必须通过 GitHub API、GitLab API 或管理员确认：
 
-- Branch Protection 是否开启。
+- Branch Protection 或 Repository Rulesets 是否开启并覆盖核心分支。
 - Required status checks 是否配置。
+- Required reviewers 是否配置。
+- CODEOWNERS 是否被分支保护规则强制要求。
 - Production Environment Approval 是否配置。
 - Secret scanning / Push protection 是否开启。
 - Dependabot alerts 是否开启。
 - Code scanning 是否开启。
 - 团队权限是否符合最小权限原则。
+
+`.github/settings.yml` 只能表示期望状态，不能证明配置已成功应用到 GitHub 平台。可靠确认可使用：
+
+```bash
+gh auth status
+gh api repos/<owner>/<repo>/branches/<branch>/protection
+gh api repos/<owner>/<repo>/rulesets
+```
 
 因此，检查报告应区分：
 

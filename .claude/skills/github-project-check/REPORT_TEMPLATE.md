@@ -55,14 +55,25 @@
 
 以下项目无法仅通过本地仓库判断，需要 GitHub API、GitLab API 或管理员确认：
 
-- Branch Protection 是否开启。
+- Branch Protection 或 Repository Rulesets 是否开启并覆盖核心分支。
 - Required status checks 是否配置。
 - Required reviewers 是否配置。
+- CODEOWNERS 是否被分支保护规则强制要求。
 - Production Environment Approval 是否配置。
 - Secret scanning / Push protection 是否开启。
 - Dependabot alerts 是否开启。
 - Code scanning 是否开启。
 - 团队权限是否符合最小权限原则。
+
+如存在 `.github/settings.yml`、Terraform / OpenTofu 等配置即代码文件，请同时说明：这些文件只能表示期望状态，不能证明配置已成功应用到平台。
+
+可选平台检查命令：
+
+```bash
+gh auth status
+gh api repos/<owner>/<repo>/branches/<branch>/protection
+gh api repos/<owner>/<repo>/rulesets
+```
 
 ---
 

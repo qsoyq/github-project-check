@@ -555,6 +555,29 @@ Closes #
 - 管理员是否可绕过要明确。
 - release/main 合并需要人工审批。
 
+推荐使用 `.github/settings.yml`、Terraform / OpenTofu 或等价配置即代码方案记录期望状态，例如：
+
+```yaml
+branches:
+  - name: main
+    protection:
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+        require_code_owner_reviews: true
+      required_status_checks:
+        strict: true
+        contexts:
+          - ci
+```
+
+注意：配置文件只能说明期望状态，不能证明平台侧已经生效。实际状态必须通过 GitHub UI 或 API 确认：
+
+```bash
+gh auth status
+gh api repos/<owner>/<repo>/branches/<branch>/protection
+gh api repos/<owner>/<repo>/rulesets
+```
+
 ### 6.3 Secrets 规范
 
 严禁将密钥、令牌、密码、证书、私钥提交到仓库或写入 Actions 日志。

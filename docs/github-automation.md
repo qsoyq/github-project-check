@@ -141,7 +141,36 @@ jobs:
 - 并发任务设置 concurrency，避免重复部署。
 - 对 AI Action 设置最大轮数、触发条件和成本限制。
 
-### 4.5 游戏项目中的 Actions 建议
+### 4.5 平台配置检查
+
+Branch Protection、Repository Rulesets、Required reviewers、Required status checks、Environment required reviewers 等配置属于平台侧状态，普通本地 Git 仓库无法可靠判断。
+
+如果团队允许配置即代码，可以在仓库中维护 `.github/settings.yml`、Terraform / OpenTofu 或等价配置文件，用于声明期望状态。示例：
+
+```yaml
+branches:
+  - name: main
+    protection:
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+        require_code_owner_reviews: true
+      required_status_checks:
+        strict: true
+        contexts:
+          - ci
+```
+
+但该文件只能表示期望状态，不能证明配置已应用到 GitHub。需要确认实际状态时，应使用 GitHub UI 或 API：
+
+```bash
+gh auth status
+gh api repos/<owner>/<repo>/branches/<branch>/protection
+gh api repos/<owner>/<repo>/rulesets
+```
+
+如果 API 返回权限不足，不应直接判定未配置，应由仓库管理员确认。
+
+### 4.6 游戏项目中的 Actions 建议
 
 游戏项目可在 Actions 或等效 CI 中增加：
 

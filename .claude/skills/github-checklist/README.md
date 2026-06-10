@@ -57,6 +57,18 @@
 | `gitlab` | GitLab 兼容 / 迁移 |
 | `pilot` | 试点验收 |
 
+## 轻量检查边界
+
+轻量检查可以查看 `.github/settings.yml` 是否存在，以及是否声明核心分支保护、PR review、Code Owner review、status checks 等期望配置。但它不能证明 GitHub 平台已经应用这些配置。
+
+实际平台状态需要通过 GitHub UI 或 API 确认，例如：
+
+```bash
+gh auth status
+gh api repos/<owner>/<repo>/branches/<branch>/protection
+gh api repos/<owner>/<repo>/rulesets
+```
+
 ## 和 github-project-check 的区别
 
 - `github-checklist`：输出阶段性 Checklist，偏执行手册。

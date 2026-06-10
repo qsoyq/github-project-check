@@ -60,7 +60,8 @@
 - [ ] Issue 模板已配置。
 - [ ] PR 模板已配置。
 - [ ] CODEOWNERS 已配置。
-- [ ] 核心分支已启用保护。
+- [ ] 如团队使用配置即代码，`.github/settings.yml` 已声明核心分支保护期望。
+- [ ] 核心分支已通过 GitHub UI / API 确认启用保护或 Repository Rulesets。
 - [ ] Secrets 未明文提交。
 - [ ] 基础 CI 检查已配置。
 - [ ] 文档目录已创建。
@@ -408,7 +409,8 @@ docs/
 - [ ] GitLab Issue 与 GitHub Issue 的使用方式已统一。
 - [ ] GitLab MR 与 GitHub PR 的模板已统一。
 - [ ] GitLab CI 与 GitHub Actions 的职责边界明确。
-- [ ] Protected Branches / Branch Protection 规则一致。
+- [ ] Protected Branches / Branch Protection / Repository Rulesets 规则一致。
+- [ ] 如使用 `.github/settings.yml` 或等价配置即代码，已确认期望配置与平台实际状态一致。
 - [ ] CODEOWNERS 可复用或已迁移。
 - [ ] CI Variables / GitHub Secrets 的迁移方式明确。
 - [ ] Git LFS 或资产管理策略明确。
@@ -422,7 +424,8 @@ docs/
 
 - [ ] 所有需求通过 Issue 管理。
 - [ ] 所有代码变更通过 PR / MR。
-- [ ] 核心分支启用保护规则。
+- [ ] 核心分支已通过 GitHub UI / API 确认启用保护规则或 Repository Rulesets。
+- [ ] 如使用 `.github/settings.yml`，已确认期望配置已同步到平台。
 - [ ] PR 至少通过一项自动化检查。
 - [ ] README、PR 模板、Issue 模板齐全。
 - [ ] 无明文密钥提交。

@@ -189,6 +189,7 @@ description: Show or apply stage-specific GitHub collaboration checklists for pr
 - 文件是否存在。
 - `.github/` 是否存在。
 - workflow 是否存在。
+- `.github/settings.yml` 是否存在，以及是否声明核心分支保护期望。
 - `CLAUDE.md` 是否存在。
 - PR / Issue 模板是否存在。
 
@@ -200,10 +201,14 @@ description: Show or apply stage-specific GitHub collaboration checklists for pr
 
 例如：
 
-- Branch Protection 是否开启。
+- Branch Protection 或 Repository Rulesets 是否开启。
+- Required reviewers / Required status checks 是否配置。
+- CODEOWNERS 是否被分支保护规则强制要求。
 - Production Environment Approval 是否配置。
 - Secret scanning 是否开启。
 - Dependabot alerts 是否开启。
+
+如存在 `.github/settings.yml`，只能说明仓库声明了期望状态；实际是否生效仍需 GitHub UI、`gh api repos/<owner>/<repo>/branches/<branch>/protection` 或 `gh api repos/<owner>/<repo>/rulesets` 确认。
 
 如果用户想要完整仓库审计，应建议使用：
 
