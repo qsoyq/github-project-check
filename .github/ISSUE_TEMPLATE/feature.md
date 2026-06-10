@@ -1,6 +1,6 @@
 ---
 name: Feature
-description: 提出新功能、流程改进或能力建设需求
+about: 提出新功能、流程改进或能力建设需求
 title: "[Feature] "
 labels: ["type/feature"]
 assignees: []

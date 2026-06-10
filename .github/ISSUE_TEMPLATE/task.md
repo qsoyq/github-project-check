@@ -1,6 +1,6 @@
 ---
 name: Task
-description: 创建技术任务、文档任务、治理任务或维护任务
+about: 创建技术任务、文档任务、治理任务或维护任务
 title: "[Task] "
 labels: ["type/task"]
 assignees: []
