@@ -111,7 +111,7 @@ gh api \
       "Repository governance check"
     ]
   },
-  "enforce_admins": true,
+  "enforce_admins": false,
   "required_pull_request_reviews": {
     "required_approving_review_count": 1,
     "require_code_owner_reviews": true,
@@ -129,7 +129,7 @@ gh api \
 JSON
 ```
 
-API 成功返回只能证明本次请求已被平台接受；报告中仍应建议用 `gh api repos/<owner>/<repo>/branches/<branch>/protection` 或 GitHub UI 复核实际状态。
+模板中的 `enforce_admins: false` 表示管理员可绕过分支保护合并，适用于个人仓库或没有第二个 reviewer 的 bootstrap 阶段；PR 作者仍不能 approve 自己的 PR。团队仓库或已有多个维护者时，应改为 `enforce_admins: true`，让管理员也受保护规则约束。API 成功返回只能证明本次请求已被平台接受；报告中仍应建议用 `gh api repos/<owner>/<repo>/branches/<branch>/protection` 或 GitHub UI 复核实际状态。
 
 ## 最小检查项
 

@@ -188,6 +188,7 @@ chore/<issue-id>-<short-desc>
 GitHub 平台侧状态需要管理员确认，包括：
 
 - Branch Protection 或 Repository Rulesets。
+- `enforce_admins` 是否符合当前协作模式：个人仓库 bootstrap 可用 `false` 允许 admin bypass；团队仓库应使用 `true`。
 - Required status checks。
 - CODEOWNERS review 是否被强制要求。
 - Secret scanning / Push protection。

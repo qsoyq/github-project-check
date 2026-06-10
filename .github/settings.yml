@@ -12,5 +12,5 @@ branches:
         strict: true
         contexts:
           - Repository governance check
-      enforce_admins: true
+      enforce_admins: false
       restrictions: null
