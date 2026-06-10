@@ -67,6 +67,37 @@
 gh auth status
 gh api repos/<owner>/<repo>/branches/<branch>/protection
 gh api repos/<owner>/<repo>/rulesets
+# Vulnerability alerts / Dependabot alerts: 204 表示已启用，404 可能表示未启用或权限不足。
+gh api repos/<owner>/<repo>/vulnerability-alerts --include
+# Dependabot security updates / automated security fixes: 200 或 204 表示已启用。
+gh api repos/<owner>/<repo>/automated-security-fixes --include
+```
+
+依赖安全治理建议：
+
+- Vulnerability alerts / Dependabot alerts 用于发现依赖漏洞并提醒维护者。
+- Dependabot security updates / automated security fixes 用于在有可修复漏洞时自动创建安全升级 PR。
+- 如需定期检查依赖或 GitHub Actions 版本，配置 `.github/dependabot.yml`。
+- Dependabot PR 仍必须经过 CI、Review 和 Branch Protection，不应自动绕过人工审查。
+
+## Commit message 规范
+
+提交前应使用 Conventional Commit 格式：
+
+```text
+<type>: <short summary>
+```
+
+常用 type：`feat`、`fix`、`docs`、`ci`、`chore`、`refactor`、`test`。
+
+建议 commit message 中使用 `Refs #<issue-id>` 关联 Issue，由 PR 描述使用 `Closes #<issue-id>` 在合并时关闭 Issue。
+
+示例：
+
+```text
+chore: add github governance and security baseline
+
+Refs #1
 ```
 
 ## 和 github-project-check 的区别

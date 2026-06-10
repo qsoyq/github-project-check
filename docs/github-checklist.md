@@ -112,7 +112,9 @@ docs/
 - [ ] 不包含范围已确认。
 - [ ] 相关设计文档或技术方案已阅读。
 - [ ] 基础分支已确认：`main` / `develop` / `release/*`。
-- [ ] 工作分支命名符合规范。
+- [ ] 已从基础分支创建工作分支，不直接在受保护分支上开发或提交。
+- [ ] 如当前在 `main` / `develop` / `release/*` 且已有 staged / unstaged 变更，已先执行 `git switch -c <type>/<issue-id>-<short-desc>` 承接当前变更。
+- [ ] 工作分支命名符合规范，优先使用 `<type>/<issue-id>-<short-desc>`；如无 Issue，PR 中应说明原因。
 - [ ] 本地开发环境可正常运行。
 - [ ] 本地测试命令可正常执行。
 - [ ] 如使用 AI 工具，已确认 AI 可处理的范围。
@@ -123,6 +125,10 @@ docs/
 
 提交代码前，应确认：
 
+- [ ] 当前分支已确认。
+- [ ] 当前不在受保护分支上提交，例如 `main` / `develop` / `release/*`。
+- [ ] 如果当前在受保护分支且已有 staged / unstaged 变更，已先执行 `git switch -c <type>/<issue-id>-<short-desc>` 创建工作分支承接当前变更。
+- [ ] 当前工作分支命名符合规范，并关联 Issue ID；如无 Issue，PR 中应说明原因。
 - [ ] 只修改了 Issue 范围内的内容。
 - [ ] 没有混入无关重构。
 - [ ] 没有提交临时调试代码。
@@ -135,8 +141,9 @@ docs/
 - [ ] 类型检查已通过，如适用。
 - [ ] 本地构建已通过，如适用。
 - [ ] 关键功能已手动验证。
-- [ ] Commit message 符合规范。
-- [ ] Commit 已关联 Issue。
+- [ ] Commit message 使用 Conventional Commit 格式：`<type>: <short summary>`。
+- [ ] Commit type 符合变更类型，例如 `feat`、`fix`、`docs`、`ci`、`chore`、`refactor`、`test`。
+- [ ] Commit 已关联 Issue，建议 commit 中使用 `Refs #<issue-id>`；由 PR 描述使用 `Closes #<issue-id>` 关闭 Issue。
 
 ---
 
@@ -144,8 +151,10 @@ docs/
 
 创建 PR / MR 时，应确认：
 
+- [ ] PR 来源分支不是受保护分支，例如 `main` / `develop` / `release/*`。
+- [ ] PR 来源分支命名符合规范，优先使用 `<type>/<issue-id>-<short-desc>`。
 - [ ] PR 标题清晰。
-- [ ] PR 已关联 Issue。
+- [ ] PR 已关联 Issue；如无 Issue，已说明无需 Issue 的原因。
 - [ ] 变更摘要已填写。
 - [ ] 变更类型已选择。
 - [ ] 影响范围已说明。
@@ -386,7 +395,9 @@ PR 合并前，应确认：
 - [ ] CodeQL 扫描范围符合项目技术栈。
 - [ ] 严重问题会阻断合并。
 - [ ] 误报有记录和豁免机制。
-- [ ] Dependabot 已启用或有替代依赖治理工具。
+- [ ] Dependabot alerts / Vulnerability alerts 已启用或有替代依赖漏洞告警机制。
+- [ ] Dependabot security updates / automated security fixes 已启用，或已明确不需要自动安全修复 PR。
+- [ ] 如需定期检查依赖或 GitHub Actions 版本，`.github/dependabot.yml` 已配置。
 - [ ] Dependabot PR 必须经过 CI 和人工 Review。
 - [ ] 重大版本升级不会自动合并。
 - [ ] Secret scanning 已启用或有替代扫描机制。

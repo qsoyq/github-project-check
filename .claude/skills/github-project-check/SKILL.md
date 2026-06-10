@@ -86,12 +86,50 @@ description: Check whether the current repository follows the team's GitHub coll
 - production environment 是否配置 required reviewers。
 - Secret scanning 是否开启。
 - Push protection 是否开启。
-- Dependabot alerts 是否开启。
+- Dependabot alerts / Vulnerability alerts 是否开启。
+- Dependabot security updates / automated security fixes 是否开启。
+- 如需定期检查依赖或 GitHub Actions 版本，`.github/dependabot.yml` 是否存在。
 - Code scanning 是否开启。
 - 仓库权限、团队权限是否符合最小权限原则。
 - GitHub App / Claude Code App 的实际权限范围。
 
 不要把“本地没看到”直接判断为“平台未配置”。对于本地不可见项，应明确输出为“需要平台侧确认”。如果仓库存在 `.github/settings.yml`，只能把它视为期望状态或配置即代码线索，不能直接当作 GitHub 平台实际状态。需要可靠确认时，建议使用 `gh api repos/<owner>/<repo>/branches/<branch>/protection` 和 `gh api repos/<owner>/<repo>/rulesets`，或让管理员在 GitHub UI 中确认。
+
+可选启用 Branch Protection 的 API 模板如下。只有在用户明确授权、且当前账号具有仓库 Admin 权限时才可执行；执行前必须把 `<owner>`、`<repo>`、`<branch>` 和 required check 名称替换为目标项目实际值：
+
+```bash
+gh api \
+  --method PUT \
+  -H "Accept: application/vnd.github+json" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  "/repos/<owner>/<repo>/branches/<branch>/protection" \
+  --input - <<'JSON'
+{
+  "required_status_checks": {
+    "strict": true,
+    "contexts": [
+      "Repository governance check"
+    ]
+  },
+  "enforce_admins": true,
+  "required_pull_request_reviews": {
+    "required_approving_review_count": 1,
+    "require_code_owner_reviews": true,
+    "dismiss_stale_reviews": true,
+    "require_last_push_approval": true
+  },
+  "restrictions": null,
+  "required_conversation_resolution": true,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "required_linear_history": false,
+  "lock_branch": false,
+  "allow_fork_syncing": false
+}
+JSON
+```
+
+API 成功返回只能证明本次请求已被平台接受；报告中仍应建议用 `gh api repos/<owner>/<repo>/branches/<branch>/protection` 或 GitHub UI 复核实际状态。
 
 ## 最小检查项
 

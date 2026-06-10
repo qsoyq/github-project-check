@@ -168,6 +168,42 @@ gh api repos/<owner>/<repo>/branches/<branch>/protection
 gh api repos/<owner>/<repo>/rulesets
 ```
 
+如需要通过 GitHub API 启用单个仓库的核心分支保护，可使用以下模板。执行前必须确认当前账号拥有仓库 Admin 权限，并替换 `<owner>`、`<repo>`、`<branch>` 和 required check 名称：
+
+```bash
+gh api \
+  --method PUT \
+  -H "Accept: application/vnd.github+json" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  "/repos/<owner>/<repo>/branches/<branch>/protection" \
+  --input - <<'JSON'
+{
+  "required_status_checks": {
+    "strict": true,
+    "contexts": [
+      "Repository governance check"
+    ]
+  },
+  "enforce_admins": true,
+  "required_pull_request_reviews": {
+    "required_approving_review_count": 1,
+    "require_code_owner_reviews": true,
+    "dismiss_stale_reviews": true,
+    "require_last_push_approval": true
+  },
+  "restrictions": null,
+  "required_conversation_resolution": true,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "required_linear_history": false,
+  "lock_branch": false,
+  "allow_fork_syncing": false
+}
+JSON
+```
+
+其中 `enforce_admins: true` 表示管理员也受保护规则约束。API 返回成功后，仍应通过 GitHub UI 或 `gh api repos/<owner>/<repo>/branches/<branch>/protection` 复核实际状态。
+
 如果 API 返回权限不足，不应直接判定未配置，应由仓库管理员确认。
 
 ### 4.6 游戏项目中的 Actions 建议
@@ -242,7 +278,42 @@ Dependabot 用于自动发现依赖漏洞和可升级版本，并自动创建升
 - 关键依赖版本应锁定。
 - 依赖升级不应自动绕过 Review。
 
-### 6.3 处理流程
+### 6.3 能力区分
+
+| 能力 | 作用 | 是否自动改主分支 |
+|---|---|---|
+| Vulnerability alerts / Dependabot alerts | 发现依赖漏洞并提醒维护者 | 否 |
+| Dependabot security updates / automated security fixes | 对可修复漏洞自动创建安全升级 PR | 否 |
+| Dependabot version updates | 按 `.github/dependabot.yml` 定期检查依赖或 GitHub Actions 新版本并创建 PR | 否 |
+
+Vulnerability alerts 是告警能力；Dependabot security updates 是安全修复 PR 能力。二者都不会绕过 CI、Review 或 Branch Protection。
+
+可用 GitHub API 启用前两项：
+
+```bash
+gh api --method PUT repos/<owner>/<repo>/vulnerability-alerts
+gh api --method PUT repos/<owner>/<repo>/automated-security-fixes
+```
+
+可用以下命令确认状态：
+
+```bash
+gh api repos/<owner>/<repo>/vulnerability-alerts --include
+gh api repos/<owner>/<repo>/automated-security-fixes --include
+```
+
+如果需要定期检查 GitHub Actions 版本，可添加 `.github/dependabot.yml`：
+
+```yaml
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+```
+
+### 6.4 处理流程
 
 ```text
 Dependabot 创建 PR
