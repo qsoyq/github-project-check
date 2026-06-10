@@ -275,7 +275,7 @@
 
 除了给人阅读的规范和 Checklist，也可以将检查逻辑封装为 Claude Code skill，在具体项目仓库目录中让 AI 按标准执行检查。
 
-当前推荐的最小可行 skill：
+当前推荐两个最小可行 skill：
 
 ```text
 .claude/skills/github-project-check/
@@ -284,13 +284,18 @@
   RULES.md
   REPORT_TEMPLATE.md
   README.md
+
+.claude/skills/github-checklist/
+  SKILL.md
+  CHECKLISTS.md
+  README.md
 ```
 
-该 skill 目录是自包含的，可以整体复制到不同项目或分发给不同成员使用，不要求目标项目必须包含本规范仓库中的 `docs/*.md`。
+这两个 skill 目录都是自包含的，可以整体复制到不同项目或分发给不同成员使用，不要求目标项目必须包含本规范仓库中的 `docs/*.md`。
 
 ### 9.1 github-project-check 的定位
 
-`github-project-check` 用于检查当前仓库是否符合团队 GitHub 研发协作规范，并输出结构化整改报告。
+`github-project-check` 是项目体检类 skill，用于检查当前仓库是否符合团队 GitHub 研发协作规范，并输出结构化整改报告。
 
 它主要检查：
 
@@ -304,7 +309,41 @@
 - 是否具备接入 Copilot / Claude Code 的基础上下文。
 - 哪些项目需要 GitHub API 或管理员进一步确认。
 
-### 9.2 本地检查与平台检查的边界
+### 9.2 github-checklist 的定位
+
+`github-checklist` 是执行清单类 skill，用于在具体阶段输出对应 Checklist，帮助开发、QA、Reviewer、发布负责人快速确认当前步骤要检查什么。
+
+它主要支持：
+
+- 新项目接入 Checklist。
+- 仓库初始化 Checklist。
+- Issue 创建 Checklist。
+- 开发前 / 提交前 Checklist。
+- PR 创建 Checklist。
+- Code Review Checklist。
+- QA / 验收 Checklist。
+- 合并前 Checklist。
+- 发布前 / 发布后 Checklist。
+- Hotfix Checklist。
+- AI 工具使用 Checklist。
+- Claude Code / GitHub Actions 接入 Checklist。
+- 安全治理 Checklist。
+- GitLab 兼容 / 迁移 Checklist。
+
+推荐使用方式：
+
+```text
+/github-checklist
+/github-checklist pr
+/github-checklist release-pre
+/github-checklist hotfix
+/github-checklist ai
+/github-checklist actions
+```
+
+如果不带参数，会输出场景菜单。
+
+### 9.3 本地检查与平台检查的边界
 
 该 skill 默认只做本地仓库静态检查。
 
@@ -336,17 +375,22 @@
 ➖ 不适用
 ```
 
-### 9.3 分发方式
+### 9.4 分发方式
 
 将整个 skill 目录复制到目标项目或用户级 skills 目录：
 
 ```text
 .claude/skills/github-project-check/
+.claude/skills/github-checklist/
 ```
 
-目录中的 `CHECKLIST.md`、`RULES.md`、`REPORT_TEMPLATE.md` 是内置检查标准和输出模板；目标项目中的 `docs/*.md` 只作为补充上下文，不作为必需依赖。
+`github-project-check` 目录中的 `CHECKLIST.md`、`RULES.md`、`REPORT_TEMPLATE.md` 是内置检查标准和输出模板。
 
-### 9.4 推荐使用方式
+`github-checklist` 目录中的 `CHECKLISTS.md` 是内置阶段清单库。
+
+目标项目中的 `docs/*.md` 只作为补充上下文，不作为必需依赖。
+
+### 9.5 github-project-check 推荐使用方式
 
 在目标项目仓库中启动 Claude Code 后执行：
 
