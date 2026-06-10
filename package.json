@@ -1,0 +1,39 @@
+{
+  "name": "github-project-check",
+  "version": "0.1.0",
+  "description": "Claude Code skills for GitHub collaboration governance checks and checklists.",
+  "type": "commonjs",
+  "bin": {
+    "github-project-check": "bin/github-project-check.js"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    ".claude/skills/",
+    "README.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node scripts/test-install.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "claude-code",
+    "skills",
+    "github",
+    "checklist",
+    "governance"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qsoyq/github-project-check.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qsoyq/github-project-check/issues"
+  },
+  "homepage": "https://github.com/qsoyq/github-project-check#readme",
+  "license": "MIT"
+}

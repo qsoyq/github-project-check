@@ -52,6 +52,9 @@ jobs:
               ".claude/skills/github-checklist/SKILL.md",
               ".claude/skills/github-checklist/CHECKLISTS.md",
               ".claude/skills/github-checklist/README.md",
+              "package.json",
+              "bin/github-project-check.js",
+              "scripts/test-install.js",
           ]
 
           required_dirs = [
@@ -76,6 +79,7 @@ jobs:
               "项目简介",
               "技术栈",
               "使用方式",
+              "npx",
               "测试方式",
               "构建方式",
               "分支策略",
@@ -85,6 +89,31 @@ jobs:
           for term in readme_required_terms:
               if term not in readme:
                   errors.append(f"README.md missing section or term: {term}")
+
+          package_json = (root / "package.json").read_text(encoding="utf-8")
+          package_required_terms = [
+              '"bin"',
+              '"github-project-check"',
+              '"files"',
+              '".claude/skills/"',
+              '"test"',
+          ]
+          for term in package_required_terms:
+              if term not in package_json:
+                  errors.append(f"package.json missing expected npm package term: {term}")
+
+          cli = (root / "bin/github-project-check.js").read_text(encoding="utf-8")
+          cli_required_terms = [
+              "--target",
+              "--force",
+              "--backup",
+              "--dry-run",
+              "github-checklist",
+              "github-project-check",
+          ]
+          for term in cli_required_terms:
+              if term not in cli:
+                  errors.append(f"bin/github-project-check.js missing expected installer term: {term}")
 
           pr_template = (root / ".github/PULL_REQUEST_TEMPLATE.md").read_text(encoding="utf-8")
           pr_required_terms = [
@@ -157,3 +186,11 @@ jobs:
               sys.exit(1)
 
           print("Repository governance check passed.")
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Test npm installer
+        run: npm test
